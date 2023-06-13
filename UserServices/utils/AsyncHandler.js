@@ -3,7 +3,11 @@ const asyncHandler = (middleware) => {
     try {
       await middleware(req, res, next);
     } catch (e) {
-      next(e);
+      res.status(500).json({
+        success: false,
+        data: e.message,
+        message: "Something went wrong"
+      })
     }
   };
 };

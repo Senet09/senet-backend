@@ -1,6 +1,7 @@
-import mongoose, { model } from "mongoose";
+import { Schema, model } from "mongoose";
+import bcrypt from "bcrypt";
 
-const userSchema =new mongoose.Schema({
+const userSchema = new Schema({
   firstName: {
     type: String,
     required: true,
@@ -20,6 +21,7 @@ const userSchema =new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
@@ -30,16 +32,39 @@ const userSchema =new mongoose.Schema({
   phone: {
     type: String,
   },
-  profilePicture: {
+  profileImageUrl: {
     type: String,
   },
   location: {
     type: String,
     required: true,
   },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  provider: {
+    type: String,
+  },
+  providerUserId: {
+    type: String,
+  },
 });
 
+userSchema.pre("save", async function (next) {
+  let user = this;
+  if (!user.isModified("password")) return next();
+  user.password = await bcrypt.hash(this.password, 10);
+  return next();
+});
 
+userSchema.methods.isValidPassword = async function isValidPassword(
+  userPassword
+) {
+  const match = await bcrypt.compare(this.password, userPassword);
+  return match;
+};
 
 const User = model("User", userSchema);
+
 export default User;

@@ -1,14 +1,16 @@
 import { Router } from "express";
 import { createNewUser, postLoginUser } from "../controllers/AuthController";
-import { sendOtp } from "../controllers/AuthController";
 import asyncHandler from "../utils/AsyncHandler";
+import { upload } from "../utils/storage";
 
 const userAuthRoutes = Router();
 
-userAuthRoutes.route("/register").post(asyncHandler(createNewUser));
+userAuthRoutes
+  .route("/register")
+  .post(upload.single("profilePicture"), asyncHandler(createNewUser));
 
 userAuthRoutes.route("/login").post(asyncHandler(postLoginUser));
 
-userAuthRoutes.route("/sendotp").post(asyncHandler(sendOtp));
+userAuthRoutes.post("/sendotp", asyncHandler());
 
 export default userAuthRoutes;
