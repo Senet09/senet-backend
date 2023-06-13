@@ -43,12 +43,12 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
-  provider: {
-    type: String,
-  },
-  providerUserId: {
-    type: String,
-  },
+  friends: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 userSchema.pre("save", async function (next) {

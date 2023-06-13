@@ -8,10 +8,10 @@ passport.use(
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-      secretOrKey: "joanlouji",
+      secretOrKey: "privatekey",
     },
     async function (jwtPayload, done) {
-      await User.findById(jwtPayload.sub)
+      await User.findById(jwtPayload._id)
         .then((user) => {
           return done(null, user);
         })
