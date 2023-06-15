@@ -2,9 +2,6 @@ import User from "../models/User";
 import constants from "../utils/constants";
 import { validate } from "email-validator";
 import { validatePassword } from "../middleware/middlewares";
-import otpGenerator from "otp-generator";
-import Otp from "../models/Otp";
-import SendMail from "../config/SendMail";
 import jwt from "jsonwebtoken";
 
 /* ------- USER REGISTER FUNCTION ------- */
