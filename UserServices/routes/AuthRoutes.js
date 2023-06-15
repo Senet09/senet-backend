@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { createNewUser, postLoginUser } from "../controllers/AuthController";
+import { updateUser, deleteUser } from "../controllers/UserController";
 import asyncHandler from "../utils/AsyncHandler";
 import { upload } from "../utils/storage";
 import { emailVerify } from "../controllers/VerifyController";
@@ -11,7 +12,5 @@ userAuthRoutes
   .post(upload.single("profilePicture"), asyncHandler(createNewUser));
 
 userAuthRoutes.route("/login").post(asyncHandler(postLoginUser));
-
-userAuthRoutes.post("/sendotp", asyncHandler(emailVerify));
 
 export default userAuthRoutes;

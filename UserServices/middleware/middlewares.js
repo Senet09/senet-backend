@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import constants from "../utils/constants";
 
 const validatePassword = (password) => {
   // Check for at least one character
@@ -14,30 +15,53 @@ const validatePassword = (password) => {
   return hasCharacter && hasNumber && hasSpecialChar;
 };
 
-const generateToken = (user) => {
-  jwt.sign({ user }, "privatekey", (err, token) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({
-        message: "JWT ERROR",
+const generateToken = async (user) => {
+  return new Promise((resolve, reject) => {
+    if (user) {
+      jwt.sign({ user }, "privatekey", (err, token) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            message: "JWT ERROR",
+          });
+        }
+        resolve(token);
       });
+    } else {
+      reject({ message: constants.REGISTER_FAILURE });
     }
-    return token;
   });
 };
 
-const verifyToken = (req, res) => {
-  const header = req.headers["authorization"];
+const verifyToken = (req, res, next) => {
+  // const header = req.headers.authorization;
 
-  if (typeof header !== "undefined") {
-    const bearer = header.split(" ");
-    const token = bearer[1];
+  // if (typeof header !== "undefined") {
+  //   const bearer = header.split(" ");
+  //   const token = bearer[1];
 
-    return res.status(200).json({ token });
-  } else {
-    //If header is undefined return Forbidden (403)
-    return res.status(403).json({ message: "Unauthorized Access" });
+  //   next(token);
+  // } else {
+  //   //If header is undefined return Forbidden (403)
+  //   return res.status(403).json({ message: "Unauthorized Access" });
+  // }
+
+  const token = req.headers.authorization;
+
+  if (!token) {
+    res.status(400).json({ status: false, message: "Token required" });
   }
+
+  jwt.verify(token, "privatekey", (err, decoded) => {
+    if (err) {
+      console.log(`JWT: ${err.message}`);
+      return res
+        .status(401)
+        .json({ status: false, error: "Token is not valid" });
+    }
+    req.user = decoded;
+    next();
+  });
 };
 
 export { validatePassword, verifyToken, generateToken };

@@ -1,8 +1,8 @@
-import User from "../models/User";
+import User from "../models/Base";
 import constants from "../utils/constants";
 import { validate } from "email-validator";
 import { validatePassword } from "../middleware/middlewares";
-import jwt from "jsonwebtoken";
+import { generateToken } from "../middleware/middlewares";
 
 /* ------- USER REGISTER FUNCTION ------- */
 const createNewUser = async (req, res) => {
@@ -84,7 +84,7 @@ const createNewUser = async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: constants.Otp_Sent,
+    message: constants.REGISTER_SUCCESSFUL,
     newUserCreated,
     // token: userToken,
   });
@@ -119,21 +119,22 @@ const postLoginUser = async (req, res) => {
     });
   }
 
-  // const token = generateToken(existUser);
-  jwt.sign({ existUser }, "privatekey", (err, token) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({
-        message: "JWT ERROR",
+  await generateToken(existUser)
+    .then((token) => {
+      // console.log(existUser);
+      return res.status(200).json({
+        success: true,
+        message: "Logged In",
+        existUser,
+        token,
       });
-    }
-    return res.status(200).json({
-      success: true,
-      message: "Logged In",
-      existUser,
-      token,
-    });
-  });
+    })
+    .catch((e) =>
+      res.status(500).json({
+        success: false,
+        message: e.message,
+      })
+    );
 };
 
 export { createNewUser, postLoginUser };
