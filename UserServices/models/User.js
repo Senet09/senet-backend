@@ -39,27 +39,27 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  isEmailVerified:{
-    type:Boolean,
-    default:false,
+  isEmailVerified: {
+    type: Boolean,
+    default: false,
   },
-  isPhoneVerified:{
-    type:Boolean,
-    default:false,
+  isPhoneVerified: {
+    type: Boolean,
+    default: false,
   },
-  role:{
-    type:String,
-    enum:["Politician","Police","User","CivilServant"],
-    default:"User"
+  role: {
+    type: String,
+    enum: ["Politician", "Administrator", "User"],
+    default: "User",
   },
-  aadharVerification:{
-    type:Boolean,
-    default:false,
+  aadharVerification: {
+    type: Boolean,
+    default: false,
   },
-  userInteractionScore:{
-    type:Number,
-    default:0
-  }
+  userInteractionScore: {
+    type: Number,
+    default: 0,
+  },
 });
 
 userSchema.pre("save", async function (next) {

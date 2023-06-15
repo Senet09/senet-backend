@@ -72,18 +72,19 @@ const createNewUser = async (req, res) => {
 
   await newUserCreated.save();
 
-  //create the otp
-  let otp = otpGenerator.generate(6, {
-    lowerCaseAlphabets: false,
-    specialChars: false,
-    upperCaseAlphabets: false,
-  });
+  // //create the otp
+  // let otp = otpGenerator.generate(6, {
+  //   lowerCaseAlphabets: false,
+  //   specialChars: false,
+  //   upperCaseAlphabets: false,
+  // });
 
-  //save the otp in db
-  const otpRes = await Otp.create({ email, otp });
-  await otpRes.save();
+  // //save the otp in db
+  // const otpRes = await Otp.create({ email, otp });
+  // await otpRes.save();
 
-  await SendMail(email, "Verify Email", otpRes.otp);
+  // await SendMail(email, "Verify Email", otpRes.otp);
+
   res.status(200).json({
     success: true,
     message: constants.Otp_Sent,
