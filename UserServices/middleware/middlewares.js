@@ -26,7 +26,7 @@ const generateToken = (user) => {
   });
 };
 
-const verifyToken = (req, res) => {
+const verifyToken = (req, res,) => {
   const header = req.headers["authorization"];
 
   if (typeof header !== "undefined") {
