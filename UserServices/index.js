@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import userAuthRoutes from "./routes/AuthRoutes";
+import userRoutes from "./routes/UserRoutes";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import helmet from "helmet";
@@ -33,6 +34,7 @@ app.use(cors());
 
 // app routes
 app.use("/user", userAuthRoutes);
+app.use("/user", userRoutes);
 
 // PORT
 const PORT = process.env.PORT || 3000;

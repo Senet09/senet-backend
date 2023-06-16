@@ -1,81 +1,52 @@
+import Base from "./Base";
 import { Schema, model } from "mongoose";
-import bcrypt from "bcrypt";
 
-const userSchema = new Schema({
-  firstName: {
-    type: String,
-    required: true,
-    min: 2,
-    max: 60,
-  },
-  lastName: {
-    type: String,
-  },
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    min: 3,
-    max: 50,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-    min: 8,
-    max: 25,
-  },
-  phone: {
-    type: String,
-  },
-  profileImageUrl: {
-    type: String,
-  },
-  location: {
-    type: String,
-    required: true,
-  },
-  isEmailVerified: {
-    type: Boolean,
-    default: false,
-  },
-  isPhoneVerified: {
-    type: Boolean,
-    default: false,
-  },
-  role: {
-    type: String,
-    enum: ["Politician", "Administrator", "User"],
-    default: "User",
-  },
-  aadharVerification: {
-    type: Boolean,
-    default: false,
-  },
-  userInteractionScore: {
-    type: Number,
-    default: 0,
-  },
-});
+const politicianSchema = Base.discriminator(
+  Schema({
+    designation: {
+      type: String,
+    },
+    interactionScore: {
+      type: Number,
+      default: 0,
+    },
+    achievements: [{ type: String }],
+    campaignInformation: [
+      {
+        type: String,
+      },
+    ],
+    endorsements: [
+      {
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+        description: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+  })
+);
 
-userSchema.pre("save", async function (next) {
-  let user = this;
-  if (!user.isModified("password")) return next();
-  user.password = await bcrypt.hash(this.password, 10);
-  return next();
-});
+const administrationSchema = Base.discriminator(
+  Schema({
+    designation: {
+      type: String,
+    },
+    department: {
+      type: String,
+    },
+    responsiveness: {
+      type: Number,
+      default: 0,
+    },
+  })
+);
 
-userSchema.methods.isValidPassword = async function isValidPassword(
-  userPassword
-) {
-  const match = await bcrypt.compare(this.password, userPassword);
-  return match;
-};
+const Politician = model("Politician", politicianSchema);
+const Administrator = model("Administrator", administrationSchema);
 
-const User = model("User", userSchema);
-
-export default User;
+export { Politician, Administrator };

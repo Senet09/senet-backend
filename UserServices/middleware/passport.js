@@ -1,4 +1,4 @@
-import User from "../models/User";
+import User from "../models/Base";
 import passport from "passport";
 import passportJWT from "passport-jwt";
 const JWTStrategy = passportJWT.Strategy;
