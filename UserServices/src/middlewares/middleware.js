@@ -18,7 +18,7 @@ const validatePassword = (password) => {
 const generateToken = async (user) => {
   return new Promise((resolve, reject) => {
     if (user) {
-      jwt.sign({ user }, "privatekey", (err, token) => {
+      jwt.sign({ user }, process.env.JWT_SECRET, (err, token) => {
         if (err) {
           console.log(err);
           return res.status(500).json({
@@ -28,7 +28,7 @@ const generateToken = async (user) => {
         resolve(token);
       });
     } else {
-      reject({ message: constants.REGISTER_FAILURE });
+      reject({ message: constants.LOGIN_UNSUCCESSFUL });
     }
   });
 };
@@ -52,7 +52,8 @@ const verifyToken = (req, res, next) => {
     res.status(400).json({ status: false, message: "Token required" });
   }
 
-  jwt.verify(token, "privatekey", (err, decoded) => {
+  // ! USE ENV VARIABLE
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       console.log(`JWT: ${err.message}`);
       return res

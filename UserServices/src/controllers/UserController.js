@@ -1,7 +1,8 @@
 import Base from "../models/Base";
+import { SOMETHING_WENT_WRONG } from "../utils/constants";
 
 const getCurrentUser = async (req, res) => {
-  const userId = req.params.id;
+  const userId = req.user.id;
   const currentUser = await Base.findById(userId);
   console.log(currentUser);
   if (currentUser) {
@@ -96,4 +97,34 @@ const deleteUser = async (req, res) => {
     });
 };
 
-export { getCurrentUser, updateUser, deleteUser };
+const addFollowing = async (req, res) => {
+  const loggedUser = req.user;
+  const followedUser = req.body;
+  const findLoggedUser = await User.findByIdAndUpdate(
+    loggedUser._id,
+    {
+      following: loggedUser.following.append(followedUser._id),
+    },
+    { new: true }
+  )
+    .then((res) => res)
+    .catch((e) => console.error(e));
+
+  const updateFollowersOfFollowedUser = await User.findByIdAndUpdate(
+    followedUser._id,
+    { followers: followedUser.followers.append(loggedUser._id) },
+    { new: true }
+  )
+    .then((res) => res)
+    .catch((e) => console.error(e));
+
+  if (findLoggedUser && updateFollowersOfFollowedUser) {
+    return res.status(200).json({ success: true, followedUser, loggedUser });
+  } else {
+    return res
+      .status(500)
+      .json({ success: false, message: SOMETHING_WENT_WRONG });
+  }
+};
+
+export { getCurrentUser, updateUser, deleteUser, addFollowing };

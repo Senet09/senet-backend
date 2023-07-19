@@ -3,6 +3,14 @@ import { Schema, model } from "mongoose";
 
 const politicianSchema = Base.discriminator(
   Schema({
+    aadhar: {
+      type: BigInt,
+      required: true,
+    },
+    aadharVerification: {
+      type: Boolean,
+      default: false,
+    },
     designation: {
       type: String,
     },
@@ -13,7 +21,9 @@ const politicianSchema = Base.discriminator(
     achievements: [{ type: String }],
     campaignInformation: [
       {
-        type: String,
+        campaign: {
+          type: String,
+        },
       },
     ],
     endorsements: [
@@ -33,6 +43,10 @@ const politicianSchema = Base.discriminator(
 
 const administrationSchema = Base.discriminator(
   Schema({
+    aadhar: {
+      type: BigInt,
+      required: true,
+    },
     designation: {
       type: String,
     },

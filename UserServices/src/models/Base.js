@@ -68,14 +68,12 @@ const baseSchema = new Schema({
       ref: "User",
     },
   ],
-  // aadharVerification: {
-  //   type: Boolean,
-  //   default: false,
-  // },
-  // userInteractionScore: {
-  //   type: Number,
-  //   default: 0,
-  // },
+  following: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 baseSchema.pre("save", async function (next) {

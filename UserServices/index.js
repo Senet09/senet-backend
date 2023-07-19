@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
-import userAuthRoutes from "./routes/AuthRoutes";
-import userRoutes from "./routes/UserRoutes";
+import userAuthRoutes from "./src/routes/AuthRoutes";
+import userRoutes from "./src/routes/UserRoutes";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import helmet from "helmet";
@@ -9,7 +9,7 @@ import morgan from "morgan";
 import cors from "cors";
 import { fileURLToPath } from "url";
 import path from "path";
-import "./middleware/passport";
+import "./src/middlewares/passport";
 
 const app = express();
 
@@ -37,7 +37,7 @@ app.use("/user", userAuthRoutes);
 app.use("/user", userRoutes);
 
 // PORT
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // opening server
 mongoose

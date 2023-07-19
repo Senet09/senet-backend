@@ -1,9 +1,8 @@
 import { Router } from "express";
 import { createNewUser, postLoginUser } from "../controllers/AuthController";
-import { updateUser, deleteUser } from "../controllers/UserController";
+import { verifyToken } from "../middlewares/middleware";
 import asyncHandler from "../utils/AsyncHandler";
 import { upload } from "../utils/storage";
-import { emailVerify } from "../controllers/VerifyController";
 
 const userAuthRoutes = Router();
 

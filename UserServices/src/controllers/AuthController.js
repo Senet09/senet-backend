@@ -1,8 +1,8 @@
 import User from "../models/Base";
 import constants from "../utils/constants";
 import { validate } from "email-validator";
-import { validatePassword } from "../middleware/middlewares";
-import { generateToken } from "../middleware/middlewares";
+import { validatePassword } from "../middlewares/middleware";
+import { generateToken } from "../middlewares/middleware";
 
 /* ------- USER REGISTER FUNCTION ------- */
 const createNewUser = async (req, res) => {
@@ -69,25 +69,22 @@ const createNewUser = async (req, res) => {
 
   await newUserCreated.save();
 
-  // //create the otp
-  // let otp = otpGenerator.generate(6, {
-  //   lowerCaseAlphabets: false,
-  //   specialChars: false,
-  //   upperCaseAlphabets: false,
-  // });
-
-  // //save the otp in db
-  // const otpRes = await Otp.create({ email, otp });
-  // await otpRes.save();
-
-  // await SendMail(email, "Verify Email", otpRes.otp);
-
-  res.status(200).json({
-    success: true,
-    message: constants.REGISTER_SUCCESSFUL,
-    newUserCreated,
-    // token: userToken,
-  });
+  await generateToken(existUser)
+    .then((token) => {
+      // console.log(existUser);
+      return res.status(200).json({
+        success: true,
+        message: constants.REGISTER_SUCCESSFUL,
+        user: newUserCreated,
+        token,
+      });
+    })
+    .catch((e) =>
+      res.status(500).json({
+        success: false,
+        message: e.message,
+      })
+    );
 };
 
 /* ------ USER LOGIN ----- */
@@ -125,7 +122,7 @@ const postLoginUser = async (req, res) => {
       return res.status(200).json({
         success: true,
         message: "Logged In",
-        existUser,
+        user: existUser,
         token,
       });
     })
