@@ -27,7 +27,7 @@ const baseSchema = new Schema({
     type: String,
     required: true,
     min: 8,
-    max: 25,
+    max: 50,
   },
   phone: {
     type: String,

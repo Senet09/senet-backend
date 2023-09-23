@@ -21,7 +21,11 @@ const postSchema = new Schema({
         ref: "User",
         required: true,
       },
-    },  
+      body: {
+        type: String,
+        required: true,
+      },
+    },
   ],
   likes: {
     type: Number,
